@@ -65,5 +65,14 @@
     "image_url": 0,
     "about": "sadsad",
     "country": "dsfds"
+  },
+  {
+    "authorid": 6,
+    "name": "Henry Aguilar",
+    "workcount": 0,
+    "fan_count": 0,
+    "image_url": 0,
+    "about": "Nacido en Pichincha",
+    "country": "Ecuador"
   }
 ]

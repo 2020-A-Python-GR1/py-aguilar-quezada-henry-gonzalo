@@ -89,9 +89,9 @@ class View(object):
                 ''')
         elif item_type == 'libros':
             print(f''' 
-    ID Libro: {item['id']} 
-    Titulo libro: {item['title']}
-    Autores: {item['authors']}
+    ID Libro: {item_info['id']} 
+    Titulo libro: {item_info['title']}
+    Autores: {item_info['authors']}
                 ''')        
         print('//////////////////////////////////////////////////////////////')
 
@@ -176,7 +176,7 @@ class Controller(object):
 
     def insert_item(self):
         item_type = self.model.item_type
-        print("CREANDO nuevo Autor\n")
+        print(f"CREANDO nuevo {item_type.upper()}\n")
         name = input("Nombre: ")
         try:
             self.model.create_item(name)
@@ -185,8 +185,12 @@ class Controller(object):
             self.view.display_item_already_stored_error(name, item_type, e)
 
     def update_item(self):
-        name = input("A quien deseas actualizar? : ")
         item_type = self.model.item_type
+        if item_type == "autores":
+            name = input("A quien deseas actualizar? : ")
+        else:
+            name = input("Que libro deseas actualizar? : ")
+
         try:
             older = self.model.read_item(name)
             self.model.update_item(name)
@@ -204,8 +208,11 @@ class Controller(object):
         self.view.display_change_item_type(old_item_type, new_item_type)
 
     def delete_item(self):
-        name = input("A quien deseas borrar? : ")
         item_type = self.model.item_type
+        if item_type == "autores":
+            name = input("A quien deseas borrar? : ")
+        else:
+            name = input("Que libro deseas borrar? : ")
         try:
             self.model.delete_item(name)
             self.view.display_item_deletion(name, item_type)
@@ -266,10 +273,10 @@ opcionesLibros = '''
   ->'''
 
 while(1):
-    seleccion = input(opcionesAutor)
-    if (int(seleccion) < 5 and int(seleccion) > 0):
-        autorElegido = acciones[seleccion]()
-        if (int(seleccion) == 1):
+    seleccionMenu1 = input(opcionesAutor)
+    if (int(seleccionMenu1) < 6 and int(seleccionMenu1) > 0):
+        autorElegido = acciones[seleccionMenu1]()
+        if (int(seleccionMenu1) == 1):
 
             controllerBooks, accionesAutor = inicializarLibros(autorElegido)
             controllerBooks.show_items()
@@ -282,4 +289,4 @@ while(1):
                 else:
                     print("Error debes elegir un numero del 1 al 6")
     else:
-        print("Error debes elegir un numero del 1 al 4")
+        print("Error debes elegir un numero del 1 al 5")
