@@ -101,6 +101,10 @@ def update_item(name):
 
     if idxs_items:
         i, item_to_update = idxs_items[0][0], idxs_items[0][1]
+        print(f"i: {i}")
+        print(f"len(itemsAllBooks): {len(itemsAllBooks)}")
+        print(f"idxs_items[0][0]: {idxs_items[0][0]}")
+
 
         if (typeof == 'autores'):
             items[i] = {'authorid' : items[i]['authorid'],
@@ -112,13 +116,13 @@ def update_item(name):
                     'country' : input("Ingresa el nuevo pais: ")
                     }
         else:
-            items[i] = {'id' : items[i]['id'],
+            itemsAllBooks[i] = {'id' : itemsAllBooks[i]['id'],
                     'title' : input("Ingresa el nuevo titulo del libro: "),
                     'authors' : input("Ingresa los autores separados por comas: ")
                     }
             items[idxs_items2[0][0]] = {'id' : items[idxs_items2[0][0]]['id'],
-                    'title' : items[i]['title'],
-                    'authors' : ['authors']
+                    'title' : itemsAllBooks[i]['title'],
+                    'authors' : itemsAllBooks[i]['authors']
                     }
         try:
             with open(pathFile[typeof],'w') as filehandle: #a -> append
@@ -129,7 +133,7 @@ def update_item(name):
                 filehandle.close()
         except Exception as Error:
             print("Error leyendo archivo")
-        print(items[i])
+        print(idxs_items2[0][0])
     else:
         raise mvc_exc.ItemNotStored(
             'No se puede actualizar "{}" porque no existen registros'.format(name))
@@ -141,11 +145,16 @@ def delete_item(name):
     if (typeof == 'autores'):
         idxs_items = list(filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
     else:
-        idxs_items = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(items)))
-    
+        idxs_items = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(itemsAllBooks)))    
+        idxs_items2 = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(items)))
+
     if idxs_items:
         i, item_to_delete = idxs_items[0][0], idxs_items[0][1]
-        del items[i]
+        if (typeof == 'autores'):
+            del items[i]
+        else:
+            del itemsAllBooks[i]
+            del items[idxs_items2[0][0]]
         try:
             with open(pathFile[typeof],'w') as filehandle: #a -> append
                 if (typeof == 'autores'):
