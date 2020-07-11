@@ -4,6 +4,7 @@ from inicio import Autor,Libro
 import json
 
 items = list()  # global variable where we keep the data
+itemsAllBooks = list()
 typeof = ""
 pathFile = {
     'autores' : "authorD.json",
@@ -33,39 +34,48 @@ def create_item(name):
             }
         else:
             nuevo = {
-                'id' : len(items)+1,
+                'id' : len(itemsAllBooks)+1,
                 'title' : name,
-                'authors' : input("Ingresa los autores separados por comas")
+                'authors' : input("Ingresa los autores separados por comas: ")
             }
+            itemsAllBooks.append(nuevo)
 
         items.append(nuevo)
         try:
             with open(pathFile[typeof],'w') as filehandle: #a -> append
-                json.dump(items,filehandle,indent=2, separators=(',', ': '))
+                if (typeof == 'autores'):
+                    json.dump(items,filehandle,indent=2, separators=(',', ': '))
+                else:
+                    json.dump(itemsAllBooks,filehandle,indent=2, separators=(',', ': '))
                 filehandle.close()
         except Exception as Error:
             print("Error leyendo archivo")
 
 
 def create_items(tipo, autor):
-    global items
-    global typeof
+    global items, itemsAllBooks, typeof
     typeof = tipo
     #for item in app_items:
     #    items.append(Autor(item))
     if (tipo == 'autores'):
         with open(pathFile[tipo], "r") as read_file:
-                data = json.load(read_file)
+            data = json.load(read_file)
     else:
-        with open("librosJ.json", "r") as read_file:
+        with open(pathFile[tipo], "r") as read_file:
             dataBooks = json.load(read_file)
         data = list(filter(lambda x: autor in x['authors'], dataBooks))
+        itemsAllBooks = dataBooks
     items = data
 
 
 def read_item(name):
     global items
-    myitems = list(filter(lambda x: x['name'] == name, items))
+
+    if (typeof == 'autores'):
+        myitems = list(filter(lambda x: x['name'] == name, items))
+    else:
+        myitems = list(filter(lambda x: x['title'] == name, items))
+        
     if myitems:
         return myitems[0]
     else:
@@ -79,13 +89,25 @@ def read_items():
 
 
 def update_item(name):
-    global items
+    global items, typeof
     # Python 3.x removed tuple parameters unpacking (PEP 3113), so we have to do it manually (i_x is a tuple, idxs_items is a list of tuples)
-    idxs_items = list(
-        filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
+    
+
+    if (typeof == 'autores'):
+        idxs_items = list(filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
+    else:
+        idxs_items = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(itemsAllBooks)))    
+        idxs_items2 = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(items)))
+
     if idxs_items:
         i, item_to_update = idxs_items[0][0], idxs_items[0][1]
-        items[i] = {'authorid' : items[i]['authorid'],
+        print(f"i: {i}")
+        print(f"len(itemsAllBooks): {len(itemsAllBooks)}")
+        print(f"idxs_items[0][0]: {idxs_items[0][0]}")
+
+
+        if (typeof == 'autores'):
+            items[i] = {'authorid' : items[i]['authorid'],
                     'name' : input("Ingresa el nuevo nombre: "),
                     'workcount' : 0,
                     'fan_count' : 0,
@@ -93,13 +115,25 @@ def update_item(name):
                     'about' : input("Ingresa la nueva bio: "),
                     'country' : input("Ingresa el nuevo pais: ")
                     }
+        else:
+            itemsAllBooks[i] = {'id' : itemsAllBooks[i]['id'],
+                    'title' : input("Ingresa el nuevo titulo del libro: "),
+                    'authors' : input("Ingresa los autores separados por comas: ")
+                    }
+            items[idxs_items2[0][0]] = {'id' : items[idxs_items2[0][0]]['id'],
+                    'title' : itemsAllBooks[i]['title'],
+                    'authors' : itemsAllBooks[i]['authors']
+                    }
         try:
-            with open(pathFile,'w') as filehandle: #a -> append
-                json.dump(items,filehandle,indent=2, separators=(',', ': '))
+            with open(pathFile[typeof],'w') as filehandle: #a -> append
+                if (typeof == 'autores'):
+                    json.dump(items,filehandle,indent=2, separators=(',', ': '))
+                else:
+                    json.dump(itemsAllBooks,filehandle,indent=2, separators=(',', ': '))
                 filehandle.close()
         except Exception as Error:
             print("Error leyendo archivo")
-        print(items[i])
+        print(idxs_items2[0][0])
     else:
         raise mvc_exc.ItemNotStored(
             'No se puede actualizar "{}" porque no existen registros'.format(name))
@@ -108,14 +142,25 @@ def update_item(name):
 def delete_item(name):
     global items
     # Python 3.x removed tuple parameters unpacking (PEP 3113), so we have to do it manually (i_x is a tuple, idxs_items is a list of tuples)
-    idxs_items = list(
-        filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
+    if (typeof == 'autores'):
+        idxs_items = list(filter(lambda i_x: i_x[1]['name'] == name, enumerate(items)))
+    else:
+        idxs_items = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(itemsAllBooks)))    
+        idxs_items2 = list(filter(lambda i_x: i_x[1]['title'] == name, enumerate(items)))
+
     if idxs_items:
         i, item_to_delete = idxs_items[0][0], idxs_items[0][1]
-        del items[i]
+        if (typeof == 'autores'):
+            del items[i]
+        else:
+            del itemsAllBooks[i]
+            del items[idxs_items2[0][0]]
         try:
-            with open(pathFile,'w') as filehandle: #a -> append
-                json.dump(items,filehandle,indent=2, separators=(',', ': '))
+            with open(pathFile[typeof],'w') as filehandle: #a -> append
+                if (typeof == 'autores'):
+                    json.dump(items,filehandle,indent=2, separators=(',', ': '))
+                else:
+                    json.dump(itemsAllBooks,filehandle,indent=2, separators=(',', ': '))
                 filehandle.close()
         except Exception as Error:
             print("Error leyendo archivo")
