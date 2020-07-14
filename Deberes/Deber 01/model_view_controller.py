@@ -290,3 +290,4 @@ while(1):
                     print("Error debes elegir un numero del 1 al 6")
     else:
         print("Error debes elegir un numero del 1 al 5")
+

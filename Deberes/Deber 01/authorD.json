@@ -74,5 +74,14 @@
     "image_url": 0,
     "about": "Nacido en Pichincha",
     "country": "Ecuador"
+  },
+  {
+    "authorid": 7,
+    "name": "Nuevo autor",
+    "workcount": 0,
+    "fan_count": 0,
+    "image_url": 0,
+    "about": "BioNuew",
+    "country": "PaisNew"
   }
 ]
