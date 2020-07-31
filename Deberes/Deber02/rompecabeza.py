@@ -5,7 +5,7 @@ from matplotlib.widgets import Button
 import random
 
 mapache = misc.face()
-N = 3
+N = 2
 
 xImagen = 768
 yImagen = 1024
@@ -20,15 +20,28 @@ for linea in np.hsplit(mapache,N):
     print(len(arregloCuadros))
 arregloCuadros = np.array(arregloCuadros)
 
+imagenOriginal = arregloCuadros.copy()
+
+posX = random.randint(0,N-1) 
+posY = random.randint(0,N-1) 
+cuadroEliminado = arregloCuadros[posX][posY].copy()
+arregloCuadros[posX][posY] = np.full((int(xImagen/N), int(yImagen/N), 3), 255)
+imagenOriginal[posX][posY] = np.full((int(xImagen/N), int(yImagen/N), 3), 255)
+print(f"Son iguales= {np.array_equal(arregloCuadros[posX][posY],imagenOriginal[posX][posY])}")
+print(f"Posiciones= x:{posX} y:{posY}")
+print(arregloCuadros[posX][posY])
 
 for arreglo in arregloCuadros:
     np.random.shuffle(arreglo)
 np.random.shuffle(arregloCuadros)
 print(type(arregloCuadros))
 
-posX = random.randint(0,N-1) 
-posY = random.randint(0,N-1) 
-arregloCuadros[posX][posY] = np.full((int(xImagen/N), int(yImagen/N), 3), 255)
+
+for x in range(N):
+    for y in range(N):
+        if np.array_equal(arregloCuadros[x][y],np.full((int(xImagen/N), int(yImagen/N), 3), 255)):
+            posX = x
+            posY = y
 
 lineas = arregloCuadros.reshape(N,xImagen,int(yImagen/N),3)
 imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
@@ -55,6 +68,7 @@ class Index(object):
             imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
             myobjct.set_data(imagenNueva)
             self.posY += 1
+            self.verificarJuegoComplete(arregloCuadros)
             print("finalizado")
         else:
             pass
@@ -68,6 +82,7 @@ class Index(object):
             imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
             myobjct.set_data(imagenNueva)
             self.posY -= 1
+            self.verificarJuegoComplete(arregloCuadros)
             print("finalizado")
         else:
             pass
@@ -81,6 +96,7 @@ class Index(object):
             imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
             myobjct.set_data(imagenNueva)
             self.posX += 1
+            self.verificarJuegoComplete(arregloCuadros)
             print("finalizado")
         else:
             pass
@@ -94,9 +110,39 @@ class Index(object):
             imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
             myobjct.set_data(imagenNueva)
             self.posX -= 1
+            self.verificarJuegoComplete(arregloCuadros)
             print("finalizado")
         else:
             pass
+    
+    def verificarJuegoComplete(self,arregloCuadros):
+        
+        #print(np.array(imagenOriginal) == np.array(arregloCuadros))
+        #result = all(map(lambda x, y: x == y, imagenOriginal, arregloCuadros))
+        iguales = True
+        for x in range(N):
+            for y in range(N):
+                print(f"Posicion x:{x} y:{y}")
+                print(np.array_equal(imagenOriginal[x][y],arregloCuadros[x][y]))
+                if not np.array_equal(imagenOriginal[x][y],arregloCuadros[x][y]):
+                    iguales = False
+                    print(f"No iguales x:{x} y:{y} Cuadros:")
+                    #print(arregloCuadros[x][y])
+                    #print("Imagen Original")
+                    print(imagenOriginal[x][y])
+
+        if iguales:
+            print("Felicidades Juego completado")
+            arregloCuadros = []
+            for linea in np.hsplit(mapache,N):
+                print(linea.shape)
+                arregloCuadros.append(np.split(linea,N))
+                print(len(arregloCuadros))
+            arregloCuadros = np.array(arregloCuadros)
+            lineas = arregloCuadros.reshape(N,xImagen,int(yImagen/N),3)
+            imagenNueva = np.stack(lineas,axis=1).reshape(xImagen,yImagen,3)
+            myobjct.set_data(imagenNueva)
+        
 
 callback = Index(posX,posY)
 axarriba = plt.axes([0.45, 0.06, 0.1, 0.05])
