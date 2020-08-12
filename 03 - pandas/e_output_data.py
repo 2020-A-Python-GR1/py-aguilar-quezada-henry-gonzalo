@@ -12,7 +12,7 @@ import numpy as np
 import os
 import sqlite3
 
-path_guardado = "/home/dev-11/Documents/Github/py-eguez-sarzosa-vicente-adrian/03 - Pandas/data/artwork_data.pickle"
+path_guardado = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data.pickle"
 
 df = pd.read_pickle(path_guardado)
 
@@ -26,9 +26,9 @@ sub_df = df.iloc[49980:50519,:].copy()
 
 # Excel #
 
-path_excel = "/home/dev-11/Documents/Github/py-eguez-sarzosa-vicente-adrian/03 - Pandas/data/artwork_data.xlsx"
-path_excel_indice = "/home/dev-11/Documents/Github/py-eguez-sarzosa-vicente-adrian/03 - Pandas/data/artwork_data_indice.xlsx"
-path_excel_columnas = "/home/dev-11/Documents/Github/py-eguez-sarzosa-vicente-adrian/03 - Pandas/data/artwork_data_columnas.xlsx"
+path_excel = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data.xlsx"
+path_excel_indice = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data_indice.xlsx"
+path_excel_columnas = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data_columnas.xlsx"
 
 # artwork_data.xlsx
 # artwork_data_indice.xlsx
@@ -46,7 +46,7 @@ sub_df.to_excel(path_excel_columnas, columns = columnas)
 
 # Multiples hojas de trabajo #
 
-path_excel_mt = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - Pandas/data/artwork_data_mt.xlsx"
+path_excel_mt = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data_mt.xlsx"
 # artwork_data_mt.xlsx
 
 writer = pd.ExcelWriter(path_excel_mt, 
@@ -62,7 +62,7 @@ writer.save()
 
 # Formato condicional #
 
-path_excel_colores = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - Pandas/data/artwork_data_colores.xlsx"
+path_excel_colores = "/home/henry/Documents/7moSemestre/Python/py-aguilar-quezada-henry-gonzalo/03 - pandas/data/artwork_data_colores.xlsx"
 
 # artwork_data_colores.xlsx
 
